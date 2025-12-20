@@ -39,81 +39,65 @@ let getRandomUser = () => {
 
 // let q="INSERT INTO user (id,username,email,password) VALUES ?";
 
-// try {
+
 //     connection.query(q,[data], (err,result) => {
-//         if(err)throw err;
+//         if(err){return res.send("error")};
 //         console.log(result);
 //     });
-// } catch (err) {
-//     console.log(err);
-// }
 // connection.end();
 
 app.get("/", (req, res) => {
     let q = "SELECT count(*) FROM user";
-    try {
-        connection.query(q, (err, result) => {
-            if (err) throw err;
-            let count = result[0]["count(*)"];
-            res.render("home.ejs", { count });
-        });
-    } catch (err) {
-        res.send("Error Occured");
-    }
+    connection.query(q, (err, result) => {
+        if (err) { return res.send("Error Occured"); };
+        let count = result[0]["count(*)"];
+        res.render("home.ejs", { count });
+    });
+
 });
 
 app.get("/user", (req, res) => {
     let q = "SELECT id,username,email FROM user";
-    try {
-        connection.query(q, (err, result) => {
-            if (err) throw err;
-            let data = result;
-            res.render("users.ejs", { data });
-        });
-    } catch (err) {
-        res.send("Error Occured");
-    }
+
+    connection.query(q, (err, result) => {
+        if (err) { return res.send("Error Occured"); };
+        let data = result;
+        res.render("users.ejs", { data });
+    });
+
 });
 
 app.get("/user/:id/edit", (req, res) => {
     let { id } = req.params;
     let q = `SELECT * FROM user WHERE id='${id}'`;
-    try {
-        connection.query(q, (err, result) => {
-            if (err) throw err;
-            let user = result[0];
-            res.render("edit.ejs", { user });
-        });
-    } catch (err) {
-        res.send("Error Occured");
-    }
+    connection.query(q, (err, result) => {
+        if (err) { return res.send("Error Occured"); };
+        let user = result[0];
+        res.render("edit.ejs", { user });
+    });
+
 });
 
 app.patch("/user/:id", (req, res) => {
     let { id } = req.params;
     let { password: formpass, username: formname } = req.body;
     let q = `SELECT * FROM user WHERE id='${id}'`;
-    try {
-        connection.query(q, (err, result) => {
-            if (err) throw err;
-            let user = result[0];
-            if (formpass != user.password) {
-                res.send("Wrong password");
-            } else {
-                let q2 = `UPDATE user SET username='${formname}' WHERE id='${id}'`;
-                try {
-                    connection.query(q2, (err, result) => {
-                        if (err) throw err;
-                        res.redirect("/user");
-                    });
-                }catch(err){
-                    res.send("Error occurred");
-                }
-            }
-        });
-    } catch (err) {
-        res.send("Error Occured");
-    }
+    connection.query(q, (err, result) => {
+        if (err) { return res.send("Error Occured"); };
+        let user = result[0];
+        if (formpass != user.password) {
+            res.send("Wrong password");
+        } else {
+            let q2 = `UPDATE user SET username='${formname}' WHERE id='${id}'`;
+
+            connection.query(q2, (err, result) => {
+                if (err) { return res.send("Error Occured"); };
+                res.redirect("/user");
+            });
+
+        }
+    });
+
 });
 
 app.listen(8080, () => {
