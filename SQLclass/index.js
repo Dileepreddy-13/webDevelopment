@@ -29,23 +29,6 @@ let getRandomUser = () => {
     ];
 };
 
-
-// let data=[];
-// for(let i=1;i<=100;i++)
-// {
-//     data.push(getRandomUser());
-// }
-// console.log(data);
-
-// let q="INSERT INTO user (id,username,email,password) VALUES ?";
-
-
-//     connection.query(q,[data], (err,result) => {
-//         if(err){return res.send("error")};
-//         console.log(result);
-//     });
-// connection.end();
-
 app.get("/", (req, res) => {
     let q = "SELECT count(*) FROM user";
     connection.query(q, (err, result) => {
