@@ -30,19 +30,40 @@ const customerSchema = new mongoose.Schema(
 
 const order= mongoose.model("Order", orderSchema);
 
+customerSchema.post('findOneAndDelete', async function(customer) {
+    if (customer.orders.length > 0) {
+        await order.deleteMany({ _id: { $in: customer.orders } });
+    }
+});
+
+
+
 const customer = mongoose.model("Customer", customerSchema);
 
-const findOne = async () => {
+
+
+const del = async () => {
     try {
-        const custData = await customer.findOne({}).populate("orders");
-        console.log("populated data");
-        console.log(custData);
+        const res = await customer.findByIdAndDelete('69577a79aa9e424745efb239');
+        console.log(res);
     } catch (err) {
         console.log(err);
     }
 };
 
-findOne();
+del();
+
+// const findOne = async () => {
+//     try {
+//         const custData = await customer.findOne({}).populate("orders");
+//         console.log("populated data");
+//         console.log(custData);
+//     } catch (err) {
+//         console.log(err);
+//     }
+// };
+
+// findOne();
 
 
 // const addCustomer = async () => {
